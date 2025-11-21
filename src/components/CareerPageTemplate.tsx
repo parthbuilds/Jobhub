@@ -14,11 +14,22 @@ export default function CareerPageTemplate({ company, jobs }: CareerPageTemplate
         .filter((s) => s.isVisible)
         .sort((a, b) => a.order - b.order);
 
+    const getFontFamily = (fontName: string) => {
+        switch (fontName) {
+            case 'Inter': return 'var(--font-inter)';
+            case 'Roboto': return 'var(--font-roboto)';
+            case 'Open Sans': return 'var(--font-open-sans)';
+            case 'Lato': return 'var(--font-lato)';
+            case 'Montserrat': return 'var(--font-montserrat)';
+            default: return 'var(--font-inter)';
+        }
+    };
+
     return (
         <div
             className="min-h-screen bg-background text-foreground overflow-y-auto"
             style={{
-                fontFamily: company.brandConfig.fontFamily,
+                fontFamily: getFontFamily(company.brandConfig.fontFamily),
             } as React.CSSProperties}
         >
             {/* Header / Nav */}

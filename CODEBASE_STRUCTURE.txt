@@ -6,6 +6,7 @@ This document provides an overview of the "Careers Page Builder" application cod
 - **Framework**: Next.js 14+ (App Router)
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS v4 (with `tailwindcss-animate`)
+- **Fonts**: Inter, Roboto, Open Sans, Lato, Montserrat (via `next/font/google`)
 - **UI Components**: Shadcn UI (built on Radix UI)
 - **Backend/Database**: Supabase (PostgreSQL + Auth)
 - **Icons**: Lucide React
