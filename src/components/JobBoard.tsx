@@ -24,15 +24,21 @@ export default function JobBoard({ jobs, brandConfig, companySlug }: JobBoardPro
     const getPlainTextExcerpt = (html: string, maxLength: number = 150): string => {
         if (!html) return '';
 
-        // Remove HTML tags
-        const plainText = html
-            .replace(/<[^>]*>/g, ' ')  // Remove all HTML tags
-            .replace(/\s+/g, ' ')       // Replace multiple spaces with single space
+        // Create a temporary div to decode HTML entities
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = html;
+
+        // Get text content (this automatically strips all HTML tags)
+        const plainText = tempDiv.textContent || tempDiv.innerText || '';
+
+        // Clean up extra whitespace
+        const cleanedText = plainText
+            .replace(/\s+/g, ' ')  // Replace multiple spaces with single space
             .trim();
 
         // Truncate to maxLength
-        if (plainText.length <= maxLength) return plainText;
-        return plainText.substring(0, maxLength).trim() + '...';
+        if (cleanedText.length <= maxLength) return cleanedText;
+        return cleanedText.substring(0, maxLength).trim() + '...';
     };
 
     const filteredJobs = useMemo(() => {

@@ -613,6 +613,16 @@ export default function CompanyEditorPage() {
                         </div>
 
                         <div className="space-y-2">
+                            <Label>Job Slug</Label>
+                            <Input
+                                value={jobFormData.slug || ''}
+                                onChange={(e) => setJobFormData({ ...jobFormData, slug: e.target.value })}
+                                placeholder="e.g. senior-frontend-engineer"
+                            />
+                            <p className="text-xs text-muted-foreground">URL-friendly identifier (lowercase, hyphens only)</p>
+                        </div>
+
+                        <div className="space-y-2">
                             <Label>Location</Label>
                             <Input
                                 value={jobFormData.location || ''}
@@ -648,7 +658,7 @@ export default function CompanyEditorPage() {
                             />
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-3 gap-4">
                             <div className="space-y-2">
                                 <Label>Work Policy</Label>
                                 <Select
@@ -662,6 +672,25 @@ export default function CompanyEditorPage() {
                                         <SelectItem value="Remote">Remote</SelectItem>
                                         <SelectItem value="Hybrid">Hybrid</SelectItem>
                                         <SelectItem value="On-site">On-site</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+
+                            <div className="space-y-2">
+                                <Label>Experience Level</Label>
+                                <Select
+                                    value={jobFormData.experienceLevel}
+                                    onValueChange={(val: any) => setJobFormData({ ...jobFormData, experienceLevel: val })}
+                                >
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select level" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="Junior">Junior</SelectItem>
+                                        <SelectItem value="Mid-level">Mid-level</SelectItem>
+                                        <SelectItem value="Senior">Senior</SelectItem>
+                                        <SelectItem value="Lead">Lead</SelectItem>
+                                        <SelectItem value="Executive">Executive</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
