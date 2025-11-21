@@ -117,20 +117,67 @@ function SectionRenderer({
                 </section>
             );
         case 'Video':
+            const getEmbedUrl = (url: string) => {
+                if (!url) return null;
+
+                // Check if it's already a data URL (uploaded video)
+                if (url.startsWith('data:video')) {
+                    return url;
+                }
+
+                // YouTube URL patterns
+                const youtubeRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+                const youtubeMatch = url.match(youtubeRegex);
+                if (youtubeMatch && youtubeMatch[1]) {
+                    return `https://www.youtube.com/embed/${youtubeMatch[1]}`;
+                }
+
+                // Vimeo URL patterns
+                const vimeoRegex = /(?:vimeo\.com\/)(\d+)/;
+                const vimeoMatch = url.match(vimeoRegex);
+                if (vimeoMatch && vimeoMatch[1]) {
+                    return `https://player.vimeo.com/video/${vimeoMatch[1]}`;
+                }
+
+                // If it's already an embed URL, return as is
+                if (url.includes('youtube.com/embed') || url.includes('player.vimeo.com')) {
+                    return url;
+                }
+
+                return null;
+            };
+
+            const embedUrl = getEmbedUrl(section.content || '');
+            const isUploadedVideo = section.content?.startsWith('data:video');
+
             return (
                 <section className="py-16 px-4">
                     <div className="container mx-auto max-w-4xl">
                         <h2 className="text-3xl font-bold mb-8 text-center">{section.title}</h2>
                         <div className="aspect-video rounded-xl overflow-hidden shadow-xl bg-black">
-                            {section.content && section.content.includes('http') ? (
-                                <iframe
-                                    src={section.content}
-                                    className="w-full h-full"
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                    allowFullScreen
-                                />
+                            {embedUrl ? (
+                                isUploadedVideo ? (
+                                    <video
+                                        src={embedUrl}
+                                        className="w-full h-full object-cover"
+                                        controls
+                                        playsInline
+                                    />
+                                ) : (
+                                    <iframe
+                                        src={embedUrl}
+                                        className="w-full h-full"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                        allowFullScreen
+                                    />
+                                )
                             ) : (
-                                <div className="flex items-center justify-center h-full text-white">Video Placeholder</div>
+                                <div className="flex items-center justify-center h-full text-white">
+                                    <div className="text-center">
+                                        <p className="text-lg mb-2">No video added yet</p>
+                                        <p className="text-sm text-gray-400">Add a YouTube/Vimeo URL or upload a video in the editor</p>
+                                    </div>
+                                </div>
                             )}
                         </div>
                     </div>

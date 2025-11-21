@@ -504,11 +504,34 @@ export default function CompanyEditorPage() {
                                                             {section.type === 'Video' ? 'Video URL (YouTube/Vimeo)' : 'Content'}
                                                         </Label>
                                                         {section.type === 'Video' ? (
-                                                            <Input
-                                                                value={section.content || ''}
-                                                                onChange={(e) => handleSectionChange(section.id, 'content', e.target.value)}
-                                                                placeholder="https://..."
-                                                            />
+                                                            <div className="space-y-2">
+                                                                <Input
+                                                                    value={section.content || ''}
+                                                                    onChange={(e) => handleSectionChange(section.id, 'content', e.target.value)}
+                                                                    placeholder="https://www.youtube.com/watch?v=..."
+                                                                />
+                                                                <div className="flex items-center gap-2">
+                                                                    <span className="text-xs text-muted-foreground">OR Upload:</span>
+                                                                    <Input
+                                                                        type="file"
+                                                                        accept="video/*"
+                                                                        onChange={(e) => {
+                                                                            const file = e.target.files?.[0];
+                                                                            if (file) {
+                                                                                const reader = new FileReader();
+                                                                                reader.onloadend = () => {
+                                                                                    handleSectionChange(section.id, 'content', reader.result as string);
+                                                                                };
+                                                                                reader.readAsDataURL(file);
+                                                                            }
+                                                                        }}
+                                                                        className="text-xs h-8"
+                                                                    />
+                                                                </div>
+                                                                <p className="text-xs text-muted-foreground italic">
+                                                                    Paste a YouTube or Vimeo URL, or upload a video file
+                                                                </p>
+                                                            </div>
                                                         ) : (
                                                             <Textarea
                                                                 value={section.content || ''}
