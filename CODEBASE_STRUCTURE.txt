@@ -55,6 +55,9 @@ This directory contains the application's routes and pages.
   - **Video Section**: Automatically converts YouTube and Vimeo URLs to embed format. Supports both external video URLs and uploaded video files (stored as base64 data URLs).
 - **`JobBoard.tsx`**: Component responsible for rendering the list of jobs.
 - **`JobFilter.tsx`**: Component for filtering jobs by location, type, or search query.
+- **`RichTextEditor.tsx`**: A WYSIWYG rich text editor component for job descriptions.
+  - **Features**: Bold, Italic, Headings, Bullet Lists, Numbered Lists, Undo/Redo.
+  - **Usage**: Allows admins to format job descriptions with HTML formatting that renders properly on the public job details page.
 
 ## 3. Key Connections & Data Flow
 

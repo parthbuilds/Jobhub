@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import CareerPageTemplate from '@/components/CareerPageTemplate';
+import RichTextEditor from '@/components/RichTextEditor';
 import { Company, PageSection, Job } from '@/lib/mock-data'; // Types only
 import { getCompanyBySlug, getJobsByCompanyId, updateCompany, createJob, updateJob, deleteJob } from '@/lib/db';
 import { useParams, useRouter } from 'next/navigation';
@@ -686,11 +687,10 @@ export default function CompanyEditorPage() {
 
                         <div className="space-y-2">
                             <Label>Description</Label>
-                            <Textarea
+                            <RichTextEditor
                                 value={jobFormData.description || ''}
-                                onChange={(e) => setJobFormData({ ...jobFormData, description: e.target.value })}
-                                placeholder="Job description..."
-                                className="min-h-[150px]"
+                                onChange={(value) => setJobFormData({ ...jobFormData, description: value })}
+                                placeholder="Write a detailed job description with formatting..."
                             />
                         </div>
                     </div>

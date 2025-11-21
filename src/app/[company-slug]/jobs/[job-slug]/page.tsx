@@ -86,24 +86,11 @@ export default async function JobDetailsPage({ params }: JobPageProps) {
 
                     {/* Job Description */}
                     <div className="prose prose-lg max-w-none">
-                        <h3 className="text-xl font-semibold mb-4">About the Role</h3>
-                        <p>{job.description}</p>
-
-                        {/* Placeholder for more detailed content since mock data is simple */}
-                        <h3 className="text-xl font-semibold mt-8 mb-4">Requirements</h3>
-                        <ul className="list-disc pl-5 space-y-2">
-                            <li>Experience with modern web technologies.</li>
-                            <li>Strong problem-solving skills.</li>
-                            <li>Excellent communication and teamwork abilities.</li>
-                            <li>{job.experienceLevel} level experience required.</li>
-                        </ul>
-
-                        <h3 className="text-xl font-semibold mt-8 mb-4">Benefits</h3>
-                        <ul className="list-disc pl-5 space-y-2">
-                            <li>Competitive salary: {job.salaryRange}</li>
-                            <li>Remote/Hybrid work options.</li>
-                            <li>Health and wellness programs.</li>
-                        </ul>
+                        <h3 className="text-xl font-semibold mb-4">Job Description</h3>
+                        <div
+                            dangerouslySetInnerHTML={{ __html: job.description }}
+                            className="job-description"
+                        />
                     </div>
 
                     {/* Apply Button (Bottom) */}
