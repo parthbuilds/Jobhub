@@ -20,9 +20,18 @@ export default function RichTextEditor({ value, onChange, placeholder }: RichTex
         }
     }, [value]);
 
+    const cleanHTML = (html: string): string => {
+        // Remove data-start and data-end attributes
+        return html
+            .replace(/\s*data-start="[^"]*"/g, '')
+            .replace(/\s*data-end="[^"]*"/g, '')
+            .trim();
+    };
+
     const handleInput = () => {
         if (editorRef.current) {
-            onChange(editorRef.current.innerHTML);
+            const cleanedHTML = cleanHTML(editorRef.current.innerHTML);
+            onChange(cleanedHTML);
         }
     };
 

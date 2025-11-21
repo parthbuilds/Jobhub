@@ -14,6 +14,15 @@ export default async function JobDetailsPage({ params }: JobPageProps) {
     let company;
     let job;
 
+    // Function to clean HTML from unwanted attributes
+    const cleanHTML = (html: string): string => {
+        if (!html) return '';
+        return html
+            .replace(/\s*data-start="[^"]*"/g, '')
+            .replace(/\s*data-end="[^"]*"/g, '')
+            .trim();
+    };
+
     try {
         company = await getCompanyBySlug(companySlug);
         job = await getJobBySlug(jobSlug);
@@ -85,10 +94,10 @@ export default async function JobDetailsPage({ params }: JobPageProps) {
                     <hr />
 
                     {/* Job Description */}
-                    <div className="prose prose-lg max-w-none">
+                    <div className="prose prose-lg max-w-none prose-headings:font-bold prose-h3:text-xl prose-h3:mt-6 prose-h3:mb-3 prose-p:my-3 prose-ul:my-3 prose-li:my-1">
                         <h3 className="text-xl font-semibold mb-4">Job Description</h3>
                         <div
-                            dangerouslySetInnerHTML={{ __html: job.description }}
+                            dangerouslySetInnerHTML={{ __html: cleanHTML(job.description) }}
                             className="job-description"
                         />
                     </div>
