@@ -20,6 +20,21 @@ export default function JobBoard({ jobs, brandConfig, companySlug }: JobBoardPro
     const [locationFilter, setLocationFilter] = useState('All');
     const [typeFilter, setTypeFilter] = useState('All');
 
+    // Function to strip HTML tags and create a plain text excerpt
+    const getPlainTextExcerpt = (html: string, maxLength: number = 150): string => {
+        if (!html) return '';
+
+        // Remove HTML tags
+        const plainText = html
+            .replace(/<[^>]*>/g, ' ')  // Remove all HTML tags
+            .replace(/\s+/g, ' ')       // Replace multiple spaces with single space
+            .trim();
+
+        // Truncate to maxLength
+        if (plainText.length <= maxLength) return plainText;
+        return plainText.substring(0, maxLength).trim() + '...';
+    };
+
     const filteredJobs = useMemo(() => {
         return jobs.filter((job) => {
             const matchesSearch = job.title.toLowerCase().includes(searchQuery.toLowerCase());
@@ -73,7 +88,7 @@ export default function JobBoard({ jobs, brandConfig, companySlug }: JobBoardPro
                                     <span className="px-2 py-1 rounded-md bg-muted text-xs font-medium">{job.experienceLevel}</span>
                                     <span className="px-2 py-1 rounded-md bg-muted text-xs font-medium">{job.salaryRange}</span>
                                 </div>
-                                <p className="text-sm text-muted-foreground line-clamp-2">{job.description}</p>
+                                <p className="text-sm text-muted-foreground line-clamp-2">{getPlainTextExcerpt(job.description)}</p>
                             </CardContent>
                             <CardFooter className="pt-0 pb-4">
                                 <p className="text-xs text-muted-foreground">Posted {job.postedDaysAgo} days ago</p>
