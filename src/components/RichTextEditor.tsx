@@ -36,9 +36,22 @@ export default function RichTextEditor({ value, onChange, placeholder }: RichTex
     };
 
     const execCommand = (command: string, value?: string) => {
-        document.execCommand(command, false, value);
+        // Prevent default behavior
         editorRef.current?.focus();
-        handleInput();
+
+        // Use execCommand for most commands
+        if (command === 'insertUnorderedList' || command === 'insertOrderedList') {
+            // Handle lists with execCommand but ensure focus
+            const selection = window.getSelection();
+            if (selection && selection.rangeCount > 0) {
+                document.execCommand(command, false, value);
+                // Force update
+                setTimeout(() => handleInput(), 10);
+            }
+        } else {
+            document.execCommand(command, false, value);
+            handleInput();
+        }
     };
 
     const formatButtons = [
@@ -62,6 +75,7 @@ export default function RichTextEditor({ value, onChange, placeholder }: RichTex
                         variant="ghost"
                         size="sm"
                         className="h-8 w-8 p-0"
+                        onMouseDown={(e) => e.preventDefault()}
                         onClick={() => execCommand(command, value)}
                         title={title}
                     >
@@ -88,6 +102,38 @@ export default function RichTextEditor({ value, onChange, placeholder }: RichTex
                     content: attr(data-placeholder);
                     color: hsl(var(--muted-foreground));
                     pointer-events: none;
+                }
+                
+                [contenteditable] ul,
+                [contenteditable] ol {
+                    margin: 1em 0;
+                    padding-left: 2em;
+                }
+                
+                [contenteditable] ul {
+                    list-style-type: disc;
+                }
+                
+                [contenteditable] ol {
+                    list-style-type: decimal;
+                }
+                
+                [contenteditable] li {
+                    margin: 0.5em 0;
+                }
+                
+                [contenteditable] h3 {
+                    font-size: 1.25em;
+                    font-weight: bold;
+                    margin: 1em 0 0.5em 0;
+                }
+                
+                [contenteditable] strong {
+                    font-weight: bold;
+                }
+                
+                [contenteditable] em {
+                    font-style: italic;
                 }
             `}</style>
         </div>
