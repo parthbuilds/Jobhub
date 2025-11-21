@@ -7,6 +7,19 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOi
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 // ============================================
+// UTILITY FUNCTIONS
+// ============================================
+
+// Clean HTML from unwanted attributes
+function cleanHTML(html: string): string {
+    if (!html) return '';
+    return html
+        .replace(/\s*data-start="[^"]*"/g, '')
+        .replace(/\s*data-end="[^"]*"/g, '')
+        .trim();
+}
+
+// ============================================
 // AUTHENTICATION FUNCTIONS
 // ============================================
 
@@ -313,7 +326,7 @@ export async function createJob(jobData: {
             experience_level: jobData.experienceLevel,
             job_type: jobData.jobType,
             salary_range: jobData.salaryRange,
-            description: jobData.description,
+            description: cleanHTML(jobData.description),
             application_url: jobData.applicationUrl,
         })
         .select()
@@ -363,7 +376,7 @@ export async function updateJob(jobId: string, updates: Partial<{
     if (updates.experienceLevel) dbUpdates.experience_level = updates.experienceLevel;
     if (updates.jobType) dbUpdates.job_type = updates.jobType;
     if (updates.salaryRange !== undefined) dbUpdates.salary_range = updates.salaryRange;
-    if (updates.description) dbUpdates.description = updates.description;
+    if (updates.description) dbUpdates.description = cleanHTML(updates.description);
     if (updates.applicationUrl !== undefined) dbUpdates.application_url = updates.applicationUrl;
 
     const { data, error } = await supabase
