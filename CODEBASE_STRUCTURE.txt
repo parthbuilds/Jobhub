@@ -1,0 +1,79 @@
+# Codebase Structure & Documentation
+
+This document provides an overview of the "Careers Page Builder" application codebase, explaining the file structure, key components, and how different parts of the system interact.
+
+## 1. Technology Stack
+- **Framework**: Next.js 14+ (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS v4 (with `tailwindcss-animate`)
+- **UI Components**: Shadcn UI (built on Radix UI)
+- **Backend/Database**: Supabase (PostgreSQL + Auth)
+- **Icons**: Lucide React
+- **Forms**: React Hook Form + Zod
+
+## 2. Directory Structure
+
+### `src/app` (App Router)
+This directory contains the application's routes and pages.
+
+- **`layout.tsx`**: The root layout file.
+  - **Function**: Wraps the entire application.
+  - **Key Features**: Applies global fonts (Inter), imports global CSS, and provides the `AuthProvider` context to manage user sessions globally.
+- **`page.tsx`**: The root entry point (`/`).
+  - **Function**: Currently performs a server-side redirect to `/admin/auth`.
+- **`globals.css`**: Global stylesheet.
+  - **Function**: Sets up Tailwind CSS v4, defines CSS variables for the theme (colors, radius, fonts), and handles dark mode styles.
+- **`admin/`**: Routes related to the Recruiter/Admin interface.
+  - **`auth/page.tsx`**: The Authentication page. Handles Sign Up and Sign In logic using Supabase Auth.
+  - **`page.tsx`**: The Admin Dashboard.
+    - **Function**: The main hub for logged-in admins. Allows them to view their profile, create/manage their company, and navigate to the Editor or Job Manager.
+  - **`[slug]/`**: Dynamic route for managing a specific company's jobs.
+  - **`editor/`**: Route for the visual editor (customizing the careers page appearance).
+- **`[company-slug]/`**: Dynamic route for Public Career Pages.
+  - **`careers/page.tsx`**: The public-facing careers page for a specific company (e.g., `/acme-inc/careers`). Fetches and displays job listings.
+  - **`jobs/[jobId]/page.tsx`**: The details page for a specific job posting.
+
+### `src/lib` (Utilities & Backend)
+- **`db.ts`**: The Database Service Layer.
+  - **Function**: Contains all functions to interact with Supabase.
+  - **Key Functions**:
+    - `signUp`, `signIn`, `signOut`: Auth operations.
+    - `getAdminProfile`: Fetches the current admin's profile and associated company.
+    - `createCompany`, `getCompanyBySlug`: Company management.
+    - `getJobs`, `createJob`, `deleteJob`: Job management.
+- **`utils.ts`**: Helper functions (e.g., `cn` for class name merging).
+- **`mock-data.ts`**: Contains mock data (likely used for initial development or fallbacks).
+
+### `src/contexts`
+- **`AuthContext.tsx`**: React Context for Authentication.
+  - **Function**: Listens to Supabase auth state changes and provides the `user` object and `loading` state to the entire component tree.
+
+### `src/components`
+- **`ui/`**: Reusable UI components (Buttons, Inputs, Cards, Dialogs, etc.) provided by Shadcn UI.
+- **`CareerPageTemplate.tsx`**: The main layout component for rendering the public careers page.
+- **`JobBoard.tsx`**: Component responsible for rendering the list of jobs.
+- **`JobFilter.tsx`**: Component for filtering jobs by location, type, or search query.
+
+## 3. Key Connections & Data Flow
+
+### Authentication Flow
+1.  **User Action**: User visits `/admin/auth` and signs in.
+2.  **`db.ts`**: `signIn` function calls `supabase.auth.signInWithPassword`.
+3.  **`AuthContext.tsx`**: Detects the session change via `supabase.auth.onAuthStateChange` and updates the global `user` state.
+4.  **`admin/page.tsx`**: `useAuth` hook detects the logged-in user and renders the dashboard.
+
+### Public Page Flow (`/[company-slug]/careers`)
+1.  **URL Access**: User visits `/acme-inc/careers`.
+2.  **Page Load**: The page component extracts `company-slug` from the URL parameters.
+3.  **Data Fetching**: Calls `getCompanyBySlug` and `getJobs` from `db.ts` to fetch company details and active job listings from Supabase.
+4.  **Rendering**: Passes data to `CareerPageTemplate` and `JobBoard` to render the page.
+
+### Job Management Flow
+1.  **Admin Action**: Admin creates a job in the dashboard.
+2.  **`db.ts`**: `createJob` function inserts a new row into the `jobs` table in Supabase, linked to the admin's `company_id`.
+3.  **Update**: The public page automatically reflects the new job upon refresh (or revalidation).
+
+## 4. Extensions & Libraries Details
+- **Tailwind CSS v4**: Uses the new `@theme` directive in CSS for configuration instead of `tailwind.config.js`.
+- **Supabase Client**: Initialized using environment variables (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`).
+- **Lucide React**: Provides the icon set used throughout the app (e.g., `Building2`, `LogOut`).
